@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FlatList, Platform, Pressable, StyleSheet, View } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import TaskInput from '@/components/TaskInput';
-import TaskItem, { type Task } from '@/components/TaskItem';
+import { ThemedText } from '../../components/ThemedText';
+import { ThemedView } from '../../components/ThemedView';
+import TaskInput from '../../components/TaskInput';
+import TaskItem, { type Task } from '../../components/TaskItem';
 import { MaterialIcons } from '@expo/vector-icons';
-import * as storage from '@/utils/storage';
+import * as storage from '../../utils/storage';
 
 const PRIMARY = '#5B46F6';
 const BG = '#F6F7FB';
