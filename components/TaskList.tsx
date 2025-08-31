@@ -97,26 +97,29 @@ export default function TaskList({
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerTop}>
-          <View style={styles.headerIcon}>
-            <Ionicons name="grid-outline" size={24} color="white" />
+          <View style={styles.headerLeft}>
+            <View style={styles.headerIcon}>
+              <Ionicons name="grid-outline" size={24} color="white" />
+            </View>
+            <View style={styles.dateContainer}>
+              <Text style={styles.dateText}>{displayDay} {displayMonth}</Text>
+              <Text style={styles.todayText}>
+                {selectedDate === new Date().toISOString().split('T')[0] 
+                  ? 'Today' 
+                  : new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' })
+                }
+              </Text>
+            </View>
           </View>
-          <Text style={styles.dateText}>{displayDay} {displayMonth}</Text>
-          <View style={{ width: 24 }} /> {/* Empty view for balance instead of settings icon */}
+          
+          <TouchableOpacity 
+            onPress={onShowCreate}
+            style={styles.addButton}
+          >
+            <Ionicons name="add" size={20} color="white" style={styles.addIcon} />
+            <Text style={styles.addButtonText}>Add New</Text>
+          </TouchableOpacity>
         </View>
-        
-        <Text style={styles.todayText}>
-          {selectedDate === new Date().toISOString().split('T')[0] 
-            ? 'Today' 
-            : new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' })
-          }
-        </Text>
-        
-        <TouchableOpacity 
-          onPress={onShowCreate}
-          style={styles.addButton}
-        >
-          <Text style={styles.addButtonText}>Add New</Text>
-        </TouchableOpacity>
       </View>
 
       {/* Compact combined date navigator */}
@@ -294,52 +297,82 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#5B67F0',
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16,
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 8,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 20,
+    shadowColor: '#5B67F0',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   headerTop: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 4,
   },
-  headerIcon: {
+  headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
+  },
+  headerIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  dateContainer: {
+    flex: 1,
   },
   dateText: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 2,
   },
   todayText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    color: 'rgba(255, 255, 255, 0.85)',
+    fontSize: 14,
+    fontWeight: '500',
   },
   addButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 10,
+    borderRadius: 12,
     paddingHorizontal: 16,
-    paddingVertical: 8,
-    alignSelf: 'flex-start',
+    paddingVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  addIcon: {
+    marginRight: 6,
   },
   addButtonText: {
     color: 'white',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 14,
   },
   compactDateNav: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: 'white',
+    marginHorizontal: 16,
+    marginTop: -8,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   compactDateScroll: {
     flex: 1,
@@ -387,12 +420,18 @@ const styles = StyleSheet.create({
     bottom: 2,
   },
   navButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#F3F4F6',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#F9FAFB',
     alignItems: 'center',
     justifyContent: 'center',
+    marginHorizontal: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   todayButton: {
     paddingHorizontal: 14,
