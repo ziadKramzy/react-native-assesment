@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Task } from '../App';
 import Animated, { FadeIn, FadeOut, Layout, SlideInRight, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
@@ -27,26 +27,37 @@ export default function TaskList({
   // Function to show delete confirmation
   const confirmDelete = useCallback((taskId: string, taskTitle: string) => {
     setDeleteTaskId(taskId);
-    Alert.alert(
-      "Confirm Delete",
-      `Are you sure you want to delete "${taskTitle}"?`,
-      [
-        {
-          text: "Cancel",
-          onPress: () => setDeleteTaskId(null),
-          style: "cancel"
-        },
-        { 
-          text: "Delete", 
-          onPress: () => {
-            onDeleteTask(taskId);
-            setDeleteTaskId(null);
+    
+    if (Platform.OS === 'web') {
+      // Use browser's native confirm dialog for web
+      const confirmed = window.confirm(`Are you sure you want to delete "${taskTitle}"?`);
+      if (confirmed) {
+        onDeleteTask(taskId);
+      }
+      setDeleteTaskId(null);
+    } else {
+      // Use React Native Alert for mobile platforms
+      Alert.alert(
+        "Confirm Delete",
+        `Are you sure you want to delete "${taskTitle}"?`,
+        [
+          {
+            text: "Cancel",
+            onPress: () => setDeleteTaskId(null),
+            style: "cancel"
           },
-          style: "destructive"
-        }
-      ],
-      { cancelable: true }
-    );
+          { 
+            text: "Delete", 
+            onPress: () => {
+              onDeleteTask(taskId);
+              setDeleteTaskId(null);
+            },
+            style: "destructive"
+          }
+        ],
+        { cancelable: true }
+      );
+    }
   }, [onDeleteTask]);
   // Convert selected date to Date object
   const dateObj = useMemo(() => new Date(selectedDate), [selectedDate]);
