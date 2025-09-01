@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Task Manager App Setup Script
+echo "🚀 Setting up Task Manager App..."
+
+# Check if Node.js is installed
+if ! command -v node &> /dev/null; then
+    echo "❌ Node.js is not installed. Please install Node.js from https://nodejs.org/"
+    exit 1
+fi
+
+echo "✅ Node.js found: $(node --version)"
+
+# Install dependencies
+echo "📦 Installing dependencies..."
+npm install
+
+# Install Expo dependencies
+echo "📱 Installing Expo dependencies..."
+npx expo install
+
+# Check TypeScript
+echo "🔍 Checking TypeScript..."
+npx tsc --noEmit
+
+if [ $? -eq 0 ]; then
+    echo "✅ TypeScript check passed!"
+else
+    echo "⚠️ TypeScript warnings found, but app should still work"
+fi
+
+echo ""
+echo "🎉 Setup complete! You can now run the app with:"
+echo "   npm start        (starts development server)"
+echo "   npm run web      (opens in web browser)"
+echo "   npm run android  (opens in Android emulator)"
+echo "   npm run ios      (opens in iOS simulator)"
+echo ""
+echo "📱 For physical devices, install Expo Go and scan the QR code"
+echo "🔔 Make sure to allow notifications when prompted for the best experience!"

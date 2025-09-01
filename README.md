@@ -48,21 +48,33 @@ A modern, feature-rich Task Manager application built with React Native and Expo
 ## Setup Instructions
 
 ### Prerequisites
-- Node.js (version 16 or later)
-- npm or yarn package manager
-- Expo CLI (install globally with `npm install -g @expo/cli`)
+- **Node.js** (version 16 or later) - [Download here](https://nodejs.org/)
+- **npm** or **yarn** package manager (comes with Node.js)
+- **Git** for cloning the repository
 
-### Installation
+### Quick Start (Recommended)
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd task-manager-app
+   git clone https://github.com/ziadKramzy/react-native-assesment.git
+   cd react-native-assesment
    ```
 
-2. **Install dependencies**
+2. **Run the setup script**
+   
+   **For macOS/Linux:**
    ```bash
-   npm install
+   ./setup.sh
+   ```
+   
+   **For Windows:**
+   ```batch
+   setup.bat
+   ```
+   
+   **Manual installation:**
+   ```bash
+   npm run install:complete
    ```
 
 3. **Start the development server**
@@ -71,14 +83,60 @@ A modern, feature-rich Task Manager application built with React Native and Expo
    ```
    or
    ```bash
-   expo start
+   npm run dev
    ```
 
-4. **Run on different platforms**
-   - **iOS Simulator**: Press `i` in the terminal or run `npm run ios`
-   - **Android Emulator**: Press `a` in the terminal or run `npm run android`
-   - **Web Browser**: Press `w` in the terminal or run `npm run web`
-   - **Physical Device**: Scan the QR code with Expo Go app
+### Alternative Setup (Manual)
+
+If the quick start doesn't work, follow these steps:
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/ziadKramzy/react-native-assesment.git
+   cd react-native-assesment
+   ```
+
+2. **Install dependencies step by step**
+   ```bash
+   npm install
+   npx expo install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npx expo start
+   ```
+
+### Running on Different Platforms
+
+Once the development server is running:
+
+- **Web Browser**: Press `w` in the terminal or run `npm run web`
+- **iOS Simulator**: Press `i` in the terminal or run `npm run ios`
+- **Android Emulator**: Press `a` in the terminal or run `npm run android`
+- **Physical Device**: 
+  1. Install [Expo Go](https://expo.dev/client) from App Store/Google Play
+  2. Scan the QR code displayed in the terminal
+
+### Troubleshooting
+
+**If you get "expo: command not found":**
+```bash
+# Use npx instead
+npx expo start
+```
+
+**If you get dependency errors:**
+```bash
+# Clean install
+rm -rf node_modules package-lock.json
+npm install
+npx expo install
+```
+
+**If notifications don't work on mobile:**
+- Make sure you allow notification permissions when prompted
+- Restart the Expo Go app if needed
 
 ### Additional Setup for Mobile Storage (Optional)
 
