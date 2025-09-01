@@ -16,6 +16,11 @@ A modern, feature-rich Task Manager application built with React Native and Expo
 - **Persistent Storage**: Tasks are automatically saved and restored between app sessions
 - **Cross-Platform**: Works on iOS, Android, and Web
 - **Smooth Animations**: Enhanced user experience with React Native Reanimated
+- **Rich Notifications**: Multi-layered notification system with:
+  - In-app toast notifications with type-specific colors and icons
+  - System notifications on mobile devices
+  - Haptic feedback for tactile user experience
+  - Auto-dismissing notifications with smooth animations
 - **Visual Feedback**: Immediate feedback for all user interactions
 
 ## Technology Stack
@@ -30,6 +35,10 @@ A modern, feature-rich Task Manager application built with React Native and Expo
 - **react-native-reanimated**: ^4.1.0 - High-performance animations and gestures
 - **react-native-svg**: ^15.12.1 - SVG support for React Native
 - **@expo/vector-icons**: Built-in icon library (Ionicons)
+
+### Notification & Feedback Libraries
+- **expo-notifications**: System notifications and push notification support
+- **expo-haptics**: Tactile feedback for enhanced user experience on mobile devices
 
 ### Storage
 - **Custom Storage Utility**: Cross-platform storage abstraction
@@ -128,6 +137,14 @@ npx expo install @react-native-async-storage/async-storage
 - ⭕ **Incomplete tasks** appear with an empty checkbox and normal text
 - 🗓️ **Selected date** is highlighted in the date navigator
 - 📱 **Category icons** help identify task types at a glance
+
+### Notification System
+- 🎉 **Task Completion**: Green success notification with checkmark icon and success haptic
+- 🗑️ **Task Deletion**: Orange warning notification with warning icon and warning haptic
+- ➕ **Task Creation**: Green success notification with checkmark icon
+- 🔄 **Task Status Change**: Blue info notification with info icon and light haptic
+- 📱 **System Notifications**: Native notifications on mobile devices
+- 🎚️ **Auto-dismiss**: All notifications automatically disappear after 3 seconds
 
 ## State Management
 

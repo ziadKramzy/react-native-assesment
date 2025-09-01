@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import TaskList from './components/TaskList';
 import CreateTaskModal from './components/CreateTaskModal';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, BounceIn } from 'react-native-reanimated';
 import * as Storage from './utils/storage';
+import { initializeNotifications, sendLocalNotification, NotificationData, NotificationType } from './utils/notifications';
 
 export interface Task {
   id: string;
@@ -19,7 +21,7 @@ export interface Task {
 const TASKS_STORAGE_KEY = 'tasks_data';
 
 export default function App() {
-  const [notification, setNotification] = useState<string | null>(null);
+  const [notification, setNotification] = useState<NotificationData | null>(null);
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: '1',
@@ -79,7 +81,7 @@ export default function App() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [currentView, setCurrentView] = useState<'tasks' | 'create'>('tasks');
 
-  // Load tasks from storage on component mount
+  // Load tasks from storage on component mount and initialize notifications
   useEffect(() => {
     const loadTasks = async () => {
       const storedTasks = await Storage.getItem(TASKS_STORAGE_KEY);
@@ -91,7 +93,13 @@ export default function App() {
         }
       }
     };
+    
+    const initNotifications = async () => {
+      await initializeNotifications();
+    };
+    
     loadTasks();
+    initNotifications();
   }, []);
 
   // Save tasks to storage whenever they change
@@ -117,6 +125,19 @@ export default function App() {
     return tasks.filter(task => task.date === selectedDate);
   };
 
+  // Helper function to show both in-app and system notifications
+  const showNotification = async (message: string, type: NotificationType) => {
+    // Show in-app notification
+    setNotification({ message, type });
+    
+    // Show system notification on mobile
+    const title = type === 'success' ? 'Task Completed' : 
+                  type === 'warning' ? 'Task Deleted' : 
+                  type === 'info' ? 'Task Updated' : 'Task Manager';
+    
+    await sendLocalNotification(title, message, type);
+  };
+
   const addTask = (task: Omit<Task, 'id'>) => {
     const newTask: Task = {
       ...task,
@@ -126,7 +147,7 @@ export default function App() {
     };
     setTasks([...tasks, newTask]);
     setCurrentView('tasks');
-    setNotification(`Task "${task.title}" added successfully!`);
+    showNotification(`Task "${task.title}" added successfully!`, 'success');
   };
 
   // Handle date navigation
@@ -135,13 +156,60 @@ export default function App() {
   };
 
   const toggleTask = (id: string) => {
-    setTasks(tasks.map(task => 
-      task.id === id ? { ...task, completed: !task.completed } : task
-    ));
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+      const newCompletedStatus = !task.completed;
+      setTasks(tasks.map(t => 
+        t.id === id ? { ...t, completed: newCompletedStatus } : t
+      ));
+      
+      // Show notification based on completion status
+      if (newCompletedStatus) {
+        showNotification(`Task "${task.title}" completed!`, 'success');
+      } else {
+        showNotification(`Task "${task.title}" marked as incomplete`, 'info');
+      }
+    }
   };
 
   const deleteTask = (id: string) => {
-    setTasks(tasks.filter(task => task.id !== id));
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+      setTasks(tasks.filter(t => t.id !== id));
+      showNotification(`Task "${task.title}" deleted successfully`, 'warning');
+    }
+  };
+
+  // Helper function to get notification icon based on type
+  const getNotificationIcon = (type: NotificationType) => {
+    switch (type) {
+      case 'success':
+        return 'checkmark-circle';
+      case 'error':
+        return 'close-circle';
+      case 'info':
+        return 'information-circle';
+      case 'warning':
+        return 'warning';
+      default:
+        return 'information-circle';
+    }
+  };
+
+  // Helper function to get notification background color based on type
+  const getNotificationStyle = (type: NotificationType) => {
+    switch (type) {
+      case 'success':
+        return { backgroundColor: '#10B981' }; // Green
+      case 'error':
+        return { backgroundColor: '#EF4444' }; // Red
+      case 'info':
+        return { backgroundColor: '#3B82F6' }; // Blue
+      case 'warning':
+        return { backgroundColor: '#F59E0B' }; // Orange
+      default:
+        return { backgroundColor: '#5B67F0' }; // Default purple
+    }
   };
 
   return (
@@ -151,11 +219,19 @@ export default function App() {
       {/* Notification Toast */}
       {notification && (
         <Animated.View 
-          style={styles.notification}
-          entering={FadeIn.duration(300)}
+          style={[styles.notification, getNotificationStyle(notification.type)]}
+          entering={BounceIn.duration(500)}
           exiting={FadeOut.duration(300)}
         >
-          <Text style={styles.notificationText}>{notification}</Text>
+          <View style={styles.notificationContent}>
+            <Ionicons 
+              name={getNotificationIcon(notification.type)} 
+              size={20} 
+              color="white" 
+              style={styles.notificationIcon}
+            />
+            <Text style={styles.notificationText}>{notification.message}</Text>
+          </View>
         </Animated.View>
       )}
       {currentView === 'tasks' ? (
@@ -188,7 +264,6 @@ const styles = StyleSheet.create({
     top: 50,
     left: 20,
     right: 20,
-    backgroundColor: '#5B67F0',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
@@ -199,10 +274,19 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  notificationContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  notificationIcon: {
+    marginRight: 8,
+  },
   notificationText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '500',
+    flex: 1,
     textAlign: 'center',
   },
 });
