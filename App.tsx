@@ -163,7 +163,7 @@ export default function App() {
       
       // Show system notification on mobile
       const title = type === 'success' ? 'Task Completed' : 
-                    type === 'warning' ? 'Task Deleted' : 
+                    type === 'error' ? 'Task Deleted' : 
                     type === 'info' ? 'Task Updated' : 'Task Manager';
       
       await sendLocalNotification(title, message, type);
@@ -212,7 +212,7 @@ export default function App() {
     const task = tasks.find(t => t.id === id);
     if (task) {
       setTasks(prevTasks => prevTasks.filter(t => t.id !== id)); // Use functional update
-      showNotification(`Task "${task.title}" deleted successfully`, 'warning');
+      showNotification(`Task "${task.title}" deleted successfully`, 'error');
     }
   };
 
