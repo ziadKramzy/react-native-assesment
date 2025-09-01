@@ -199,9 +199,9 @@ export default function TaskList({
           <Animated.View 
             key={task.id} 
             style={styles.taskItem}
-            entering={SlideInRight.springify().delay(index * 100)}
+            entering={SlideInRight.delay(index * 100)}
             exiting={FadeOut.duration(300)}
-            layout={Layout.springify()}
+            layout={Layout}
           >
             <Animated.View style={styles.taskRow}>
               <TouchableOpacity 

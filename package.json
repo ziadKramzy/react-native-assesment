@@ -12,7 +12,8 @@
     "build:web": "npx expo export --platform web",
     "install:complete": "npm install && npx expo install",
     "fix:versions": "npx expo install react-native@0.79.5 react-native-reanimated@~3.17.4 react-native-svg@15.11.2",
-    "setup": "npm install && npx expo install && npm run fix:versions",
+    "install:web": "npx expo install react-dom react-native-web @expo/metro-runtime",
+    "setup": "npm install && npx expo install && npm run fix:versions && npm run install:web",
     "type-check": "npx tsc --noEmit"
   },
   "dependencies": {
@@ -24,13 +25,17 @@
     "react": "19.0.0",
     "react-native": "0.79.5",
     "react-native-reanimated": "~3.17.4",
-    "react-native-svg": "15.11.2"
+    "react-native-svg": "15.11.2",
+    "react-dom": "19.0.0",
+    "react-native-web": "^0.20.0",
+    "@expo/metro-runtime": "~5.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@expo/cli": "^0.24.21",
     "@types/react": "~19.0.10",
     "babel-plugin-module-resolver": "^5.0.2",
+    "react-native-worklets": "^0.5.0",
     "typescript": "~5.8.3"
   },
   "private": true

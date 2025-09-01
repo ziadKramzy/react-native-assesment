@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import TaskList from './components/TaskList';
 import CreateTaskModal from './components/CreateTaskModal';
-import Animated, { FadeIn, FadeOut, BounceIn } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, SlideInUp } from 'react-native-reanimated';
 import * as Storage from './utils/storage';
 import { initializeNotifications, sendLocalNotification, NotificationData, NotificationType } from './utils/notifications';
 
@@ -127,15 +127,21 @@ export default function App() {
 
   // Helper function to show both in-app and system notifications
   const showNotification = async (message: string, type: NotificationType) => {
-    // Show in-app notification
-    setNotification({ message, type });
-    
-    // Show system notification on mobile
-    const title = type === 'success' ? 'Task Completed' : 
-                  type === 'warning' ? 'Task Deleted' : 
-                  type === 'info' ? 'Task Updated' : 'Task Manager';
-    
-    await sendLocalNotification(title, message, type);
+    try {
+      // Show in-app notification
+      setNotification({ message, type });
+      
+      // Show system notification on mobile
+      const title = type === 'success' ? 'Task Completed' : 
+                    type === 'warning' ? 'Task Deleted' : 
+                    type === 'info' ? 'Task Updated' : 'Task Manager';
+      
+      await sendLocalNotification(title, message, type);
+    } catch (error) {
+      console.warn('Failed to show notification:', error);
+      // Fallback to just in-app notification
+      setNotification({ message, type });
+    }
   };
 
   const addTask = (task: Omit<Task, 'id'>) => {
@@ -220,7 +226,7 @@ export default function App() {
       {notification && (
         <Animated.View 
           style={[styles.notification, getNotificationStyle(notification.type)]}
-          entering={BounceIn.duration(500)}
+          entering={SlideInUp.duration(400)}
           exiting={FadeOut.duration(300)}
         >
           <View style={styles.notificationContent}>

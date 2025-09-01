@@ -24,6 +24,10 @@ call npx expo install
 echo 🔧 Fixing package compatibility...
 call npx expo install react-native@0.79.5 react-native-reanimated@~3.17.4 react-native-svg@15.11.2
 
+:: Install web dependencies
+echo 🌐 Installing web support...
+call npx expo install react-dom react-native-web @expo/metro-runtime
+
 :: Check TypeScript
 echo 🔍 Checking TypeScript...
 call npx tsc --noEmit

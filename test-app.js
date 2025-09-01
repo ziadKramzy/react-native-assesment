@@ -49,7 +49,9 @@ const requiredDependencies = [
   'react-native',
   'expo-notifications',
   'expo-haptics',
-  'react-native-reanimated'
+  'react-native-reanimated',
+  'react-dom',
+  'react-native-web'
 ];
 
 let allDepsPresent = true;

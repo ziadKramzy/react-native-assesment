@@ -179,7 +179,7 @@ export default function CreateTaskModal({ selectedDate, onAddTask, onClose }: Cr
             <Animated.View
               key={category.id}
               entering={FadeIn.delay(index * 100).duration(400)}
-              layout={Layout.springify()}
+              layout={Layout}
             >
               <TouchableOpacity
                 onPress={() => setSelectedCategory(category.id)}
