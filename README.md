@@ -60,21 +60,21 @@ A modern, feature-rich Task Manager application built with React Native and Expo
    cd react-native-assesment
    ```
 
-2. **Run the setup script**
+2. **Run the setup**
    
-   **For macOS/Linux:**
+   **Automated setup (recommended):**
    ```bash
-   ./setup.sh
+   npm run setup
    ```
    
-   **For Windows:**
-   ```batch
-   setup.bat
-   ```
+   **Script-based setup:**
+   - **macOS/Linux:** `./setup.sh`
+   - **Windows:** `setup.bat`
    
    **Manual installation:**
    ```bash
    npm run install:complete
+   npm run fix:versions
    ```
 
 3. **Start the development server**
@@ -126,17 +126,41 @@ Once the development server is running:
 npx expo start
 ```
 
+**If you get "expo: command not found":**
+```bash
+# Use npx instead of global expo
+npx expo start
+```
+
+**If you get dependency version warnings:**
+```bash
+# Fix package versions automatically
+npm run fix:versions
+# OR run the complete setup
+npm run setup
+```
+
 **If you get dependency errors:**
 ```bash
 # Clean install
 rm -rf node_modules package-lock.json
-npm install
-npx expo install
+npm run setup
 ```
+
+**If you see Reanimated plugin warnings:**
+- These are usually harmless and the app should still work
+- The babel.config.js has been configured correctly for Reanimated 3.x
 
 **If notifications don't work on mobile:**
 - Make sure you allow notification permissions when prompted
 - Restart the Expo Go app if needed
+
+**If the app won't start after cloning:**
+```bash
+# Complete setup from scratch
+npm run setup
+npm start
+```
 
 ### Additional Setup for Mobile Storage (Optional)
 

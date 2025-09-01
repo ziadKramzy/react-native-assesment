@@ -15,9 +15,13 @@ echo "✅ Node.js found: $(node --version)"
 echo "📦 Installing dependencies..."
 npm install
 
-# Install Expo dependencies
+# Install Expo dependencies with correct versions
 echo "📱 Installing Expo dependencies..."
 npx expo install
+
+# Fix any version compatibility issues
+echo "🔧 Fixing package compatibility..."
+npx expo install react-native@0.79.5 react-native-reanimated@~3.17.4 react-native-svg@15.11.2
 
 # Check TypeScript
 echo "🔍 Checking TypeScript..."

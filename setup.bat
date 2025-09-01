@@ -20,6 +20,10 @@ call npm install
 echo 📱 Installing Expo dependencies...
 call npx expo install
 
+:: Fix any version compatibility issues
+echo 🔧 Fixing package compatibility...
+call npx expo install react-native@0.79.5 react-native-reanimated@~3.17.4 react-native-svg@15.11.2
+
 :: Check TypeScript
 echo 🔍 Checking TypeScript...
 call npx tsc --noEmit

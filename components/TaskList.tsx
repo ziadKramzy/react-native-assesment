@@ -2,7 +2,7 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Task } from '../App';
-import Animated, { FadeIn, FadeOut, Layout, SlideInRight, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, Layout, SlideInRight } from 'react-native-reanimated';
 
 interface TaskListProps {
   tasks: Task[];

@@ -11,6 +11,8 @@
     "build": "npx expo export",
     "build:web": "npx expo export --platform web",
     "install:complete": "npm install && npx expo install",
+    "fix:versions": "npx expo install react-native@0.79.5 react-native-reanimated@~3.17.4 react-native-svg@15.11.2",
+    "setup": "npm install && npx expo install && npm run fix:versions",
     "type-check": "npx tsc --noEmit"
   },
   "dependencies": {
@@ -20,9 +22,9 @@
     "expo-notifications": "~0.31.4",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
-    "react-native": "0.79.6",
-    "react-native-reanimated": "^4.1.0",
-    "react-native-svg": "^15.12.1"
+    "react-native": "0.79.5",
+    "react-native-reanimated": "~3.17.4",
+    "react-native-svg": "15.11.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
