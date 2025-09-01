@@ -20,6 +20,22 @@ export interface Task {
 
 const TASKS_STORAGE_KEY = 'tasks_data';
 
+// Hermes-friendly ID generation
+const generateTaskId = (): string => {
+  const timestamp = Date.now();
+  const random = Math.floor(Math.random() * 10000);
+  return `task_${timestamp}_${random}`;
+};
+
+// Helper to get current date in YYYY-MM-DD format
+const getCurrentDate = (): string => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export default function App() {
   const [notification, setNotification] = useState<NotificationData | null>(null);
   const [tasks, setTasks] = useState<Task[]>([
@@ -29,7 +45,7 @@ export default function App() {
       time: '10:30 - 11:00',
       completed: true,
       category: 'personal',
-      date: new Date().toISOString().split('T')[0]
+      date: getCurrentDate()
     },
     {
       id: '2',
@@ -37,7 +53,7 @@ export default function App() {
       time: '11:30 - 13:00',
       completed: false,
       category: 'work',
-      date: new Date().toISOString().split('T')[0]
+      date: getCurrentDate()
     },
     {
       id: '3',
@@ -45,7 +61,7 @@ export default function App() {
       time: '13:00 - 14:00',
       completed: false,
       category: 'work',
-      date: new Date().toISOString().split('T')[0]
+      date: getCurrentDate()
     },
     {
       id: '4',
@@ -53,7 +69,7 @@ export default function App() {
       time: '14:00',
       completed: false,
       category: 'work',
-      date: new Date().toISOString().split('T')[0]
+      date: getCurrentDate()
     },
     {
       id: '5',
@@ -61,7 +77,7 @@ export default function App() {
       time: '20:00',
       completed: false,
       category: 'sport',
-      date: new Date().toISOString().split('T')[0]
+      date: getCurrentDate()
     },
     {
       id: '6',
@@ -69,46 +85,60 @@ export default function App() {
       time: '21:00',
       completed: false,
       category: 'work',
-      date: new Date().toISOString().split('T')[0]
+      date: getCurrentDate()
     }
   ]);
 
   // State to track the currently selected date
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0] // Today's date in YYYY-MM-DD format
-  );
-
+  const [selectedDate, setSelectedDate] = useState<string>(getCurrentDate());
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [currentView, setCurrentView] = useState<'tasks' | 'create'>('tasks');
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load tasks from storage on component mount and initialize notifications
   useEffect(() => {
     const loadTasks = async () => {
-      const storedTasks = await Storage.getItem(TASKS_STORAGE_KEY);
-      if (storedTasks) {
-        try {
-          setTasks(JSON.parse(storedTasks));
-        } catch (e) {
-          console.error('Failed to parse stored tasks', e);
+      try {
+        const storedTasks = await Storage.getItem(TASKS_STORAGE_KEY);
+        if (storedTasks && storedTasks.trim()) {
+          const parsedTasks = JSON.parse(storedTasks);
+          if (Array.isArray(parsedTasks)) {
+            setTasks(parsedTasks);
+          }
         }
+      } catch (error) {
+        console.warn('Failed to load tasks:', error);
+        // Keep default tasks if loading fails
+      } finally {
+        setIsLoading(false);
       }
     };
     
     const initNotifications = async () => {
-      await initializeNotifications();
+      try {
+        await initializeNotifications();
+      } catch (error) {
+        console.warn('Failed to initialize notifications:', error);
+      }
     };
     
     loadTasks();
     initNotifications();
   }, []);
 
-  // Save tasks to storage whenever they change
+  // Save tasks to storage whenever they change (but not on initial load)
   useEffect(() => {
-    const saveTasks = async () => {
-      await Storage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
-    };
-    saveTasks();
-  }, [tasks]);
+    if (!isLoading) {
+      const saveTasks = async () => {
+        try {
+          await Storage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
+        } catch (error) {
+          console.warn('Failed to save tasks:', error);
+        }
+      };
+      saveTasks();
+    }
+  }, [tasks, isLoading]);
 
   // Auto-hide notification after 3 seconds
   useEffect(() => {
@@ -147,11 +177,11 @@ export default function App() {
   const addTask = (task: Omit<Task, 'id'>) => {
     const newTask: Task = {
       ...task,
-      id: Date.now().toString(),
+      id: generateTaskId(), // Use Hermes-friendly ID generation
       createdAt: Date.now(),
       date: selectedDate, // Associate task with the currently selected date
     };
-    setTasks([...tasks, newTask]);
+    setTasks(prevTasks => [...prevTasks, newTask]); // Use functional update
     setCurrentView('tasks');
     showNotification(`Task "${task.title}" added successfully!`, 'success');
   };
@@ -165,9 +195,9 @@ export default function App() {
     const task = tasks.find(t => t.id === id);
     if (task) {
       const newCompletedStatus = !task.completed;
-      setTasks(tasks.map(t => 
+      setTasks(prevTasks => prevTasks.map(t => 
         t.id === id ? { ...t, completed: newCompletedStatus } : t
-      ));
+      )); // Use functional update
       
       // Show notification based on completion status
       if (newCompletedStatus) {
@@ -181,7 +211,7 @@ export default function App() {
   const deleteTask = (id: string) => {
     const task = tasks.find(t => t.id === id);
     if (task) {
-      setTasks(tasks.filter(t => t.id !== id));
+      setTasks(prevTasks => prevTasks.filter(t => t.id !== id)); // Use functional update
       showNotification(`Task "${task.title}" deleted successfully`, 'warning');
     }
   };
